@@ -1,0 +1,23 @@
+{
+    "tabWidth": 4,
+    "useTabs": false,
+    "semi": true,
+    "singleQuote": false,
+    "trailingComma": "none",
+    "plugins": ["prettier-plugin-java"],
+    "overrides": [
+        {
+            "files": "*.java",
+            "options": {
+                "parser": "java",
+                "tabWidth": 4
+            }
+        },
+        {
+            "files": "*.md",
+            "options": {
+                "proseWrap": "always"
+            }
+        }
+    ]
+}
