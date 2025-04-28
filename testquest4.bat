@@ -20,8 +20,15 @@ start cmd /k "java -cp .;../libs/* Replica 3"
 
 timeout /t 2
 
-REM Start ClientReader
-echo Ready to start ClientReader manually if needed.
-start cmd /k "java -cp .;../libs/* ClientReader"
+REM Start ClientWriter
+echo Starting ClientWriter...
+start cmd /k "java -cp .;../libs/* ClientWriter"
 
+timeout /t 2
+
+REM Start ClientReader (optional: you can comment/uncomment this depending on your test)
+echo Ready to start ClientReader manually if needed.
+start cmd /k "java -cp .;../libs/* ClientReaderV2"
+
+echo All components started!
 pause

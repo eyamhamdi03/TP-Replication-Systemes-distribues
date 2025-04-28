@@ -1,8 +1,12 @@
 import com.rabbitmq.client.*;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Replica {
 
@@ -36,33 +40,44 @@ public class Replica {
         channel.queueDeclare(queueName, false, false, false, null);
         channel.queueBind(queueName, EXCHANGE_NAME, "");
 
-        // Also declare the response queue!
         channel.queueDeclare(RESPONSE_QUEUE, false, false, false, null);
 
-        System.out.println(
-            " [*] Waiting for messages in Replica " + replicaNumber
-        );
+        System.out.println(" [*] Waiting for messages in Replicas ");
 
         DeliverCallback deliverCallback = (consumerTag, delivery) -> {
             String message = new String(
                 delivery.getBody(),
                 StandardCharsets.UTF_8
             );
-            System.out.println(
-                " [x] Received in Replica " + replicaNumber + ": " + message
-            );
+            System.out.println("[x] Received :" + message);
 
             if (message.equals("Read Last")) {
-                // Read last line from file
                 String lastLine = getLastLine(filePath);
                 System.out.println(" [.] Sending last line: " + lastLine);
 
-                // Send last line back to the client_reader_response queue
                 channel.basicPublish(
-                    "", // default exchange
-                    RESPONSE_QUEUE, // routing key
+                    "",
+                    RESPONSE_QUEUE,
                     null,
                     ("Replica " + replicaNumber + ": " + lastLine).getBytes(
+                            StandardCharsets.UTF_8
+                        )
+                );
+            } else if (message.equals("Read All")) {
+                List<String> allLines = readAllLines(filePath);
+                for (String line : allLines) {
+                    channel.basicPublish(
+                        "",
+                        "client_reader_response",
+                        null,
+                        line.getBytes(StandardCharsets.UTF_8)
+                    );
+                }
+                channel.basicPublish(
+                    "",
+                    "client_reader_response",
+                    null,
+                    ("END_REPLICA_" + replicaNumber).getBytes(
                             StandardCharsets.UTF_8
                         )
                 );
@@ -116,5 +131,18 @@ public class Replica {
         } catch (IOException e) {
             return "(error reading)";
         }
+    }
+
+    private static List<String> readAllLines(String filePath) {
+        List<String> lines = new ArrayList<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            lines.add("(error reading file)");
+        }
+        return lines;
     }
 }
