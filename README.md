@@ -175,25 +175,6 @@ java Replica 1
 
 ---
 
-## Project Structure
-
-```
-
-├── ClientWriter.java
-├── ClientReader.java
-├── ClientReaderV2.java
-├── Replica.java
-├── /replica1/   (Folder for Replica 1)
-│   └── file.txt
-├── /replica2/   (Folder for Replica 2)
-│   └── file.txt
-├── /replica3/   (Folder for Replica 3)
-│   └── file.txt
-├── README.md
-```
-
----
-
 ## Technical Requirements
 
 - **Java 8 or higher**
