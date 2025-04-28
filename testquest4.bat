@@ -2,7 +2,7 @@
 
 REM Compile all Java files
 echo Compiling Java files...
-javac -cp ".;../libs/*" Replica.java ClientWriter.java ClientReader.java
+javac -cp ".;../libs/*" Replica.java ClientWriter.java ClientReaderV2.java
 
 REM Start Replicas
 echo Starting Replica 1...
@@ -26,8 +26,7 @@ start cmd /k "java -cp .;../libs/* ClientWriter"
 
 timeout /t 2
 
-REM Start ClientReader (optional: you can comment/uncomment this depending on your test)
-echo Ready to start ClientReader manually if needed.
+REM Start ClientReader
 start cmd /k "java -cp .;../libs/* ClientReaderV2"
 
 echo All components started!

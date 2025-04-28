@@ -17,3 +17,6 @@ timeout /t 2
 
 echo Starting ClientWriter...
 start cmd /k "javac -cp ../libs/*;. ClientWriter.java && java -cp ../libs/*;. ClientWriter"
+echo Starting ClientReader...
+
+start cmd /k "javac -cp ../libs/*;. ClientReader.java && java -cp .;../libs/* ClientReader"
